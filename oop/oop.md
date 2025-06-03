@@ -67,15 +67,21 @@ Uso de herança (@Override) - OOP -> LSP
 
 ## Design Patterns
 
-- Abstract Method
+1. Factory Method
 
 Aqui não podemos pecar por uma definição simplória, de que basta um método criar um objeto que está aplicando o pattern
 
-Para  ser considerado **Abstract Method** devem-se cumprir 3 requisitos:
-    - Crir um novo objeto;
-    - O retorno deve ser uma interface ou classe abastrata;
-    - É necessário existirem vários objetos que implementam ou extendem a interface/classe
+Para  ser considerado *Factory Method* devem-se cumprir 3 requisitos:
+- Crir um novo objeto;
+- O retorno deve ser uma interface ou classe abastrata;
+- É necessário existirem vários objetos que implementam ou extendem a interface/classe
 
-No **AbstractMethod**, o usuário não tem ideia de qual é a classe retornada pelo método. Ele conhece apenas a interface. A decisão de qual classe retornar é do método.
+No *Factory Method*, o usuário não tem ideia de qual é a classe retornada pelo método. Ele conhece apenas a interface. A decisão de qual classe retornar é do método.
 
-- Abstract Factory
+2. Abstract Factory
+
+3. Strategy
+
+4. Singleton
+
+5. Command
