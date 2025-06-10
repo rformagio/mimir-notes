@@ -132,7 +132,7 @@ class Carro {
 Aqui não podemos pecar por uma definição simplória, de que basta um método criar um objeto que está aplicando o pattern
 
 Para  ser considerado *Factory Method* devem-se cumprir 3 requisitos:
-- Crir um novo objeto;
+- Criar um novo objeto;
 - O retorno deve ser uma interface ou classe abastrata;
 - É necessário existirem vários objetos que implementam ou extendem a interface/classe
 
