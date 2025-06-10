@@ -54,16 +54,76 @@ Uso de herança (@Override) - OOP -> LSP
 ## SOLID
 
 - SRP: Single Responsability Principle
+    Criar classes com responsabilidades únicas
 
 - OCP: Open Closed Principle
+    Extender sem alterar código
 
 - LSP: Liskov Substitution Principle
 
 - ISP: InterfaceSgregation Principle
 
-- DIP: Dpendency Inversion Principle 
 
+- DIP: Dependency Inversion Principle 
 
+## Composição vs Herança
+
+### Herança:
+
+A herança estabelece uma relação "é um" entre classes. Uma classe filha (subclasse) herda atributos e métodos de uma classe pai (superclasse). Isso significa que a subclasse é um tipo mais específico da superclasse.
+
+#### Vantagens
+- Reuso de código
+- Hierarquia natural;: modela relações claras, como "Um carro é um veículo"
+#### Desvantagens
+- Acoplamento forte
+- Complexidade em linguagnes que suportam herança múltipla
+- Hierarquia rígida: difícil alterar estrutura conforme requisitos mudam
+
+```code
+class Veiculo {
+    int velocidade;
+
+    void acelerar() {
+        // Lógica para acelerar
+    }
+}
+
+class Carro extends Veiculo {
+    int numeroPortas;
+}
+```
+
+### Composição:
+
+A composição estabelece uma relação "tem um", onde uma classe contém uma instância de outra classe como um de seus atributos. Em vez de herdar comportamentos, a classe delega a responsabilidade para o objeto que ela "tem".
+
+#### Vantagens
+- Baixo acoplamento: classes menos dependentes, facilita manutenção
+- Reuso de código flexível: reusa comportamentos sem se prender a uma hierarquia
+- Melhora coesão: classes se concentram em suas prórprias responsabilidades
+#### Desvantagens
+- Pode aumentar o número de objetos: várias classes menores para obter um conjunto de comportamentos
+
+```code
+class Motor {
+    void ligar() {
+        // Lógica para ligar o motor
+    }
+}
+
+class Carro {
+    Motor meuMotor; // Composição: Um Carro tem um Motor
+
+    Carro() {
+        this.meuMotor = new Motor();
+    }
+
+    void ligarCarro() {
+        this.meuMotor.ligar(); // Delegação
+    }
+}
+```
 
 ## Design Patterns
 
