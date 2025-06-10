@@ -54,5 +54,9 @@ Cada mensagem pode possuir uma *key* e um *value*, ambos opcionais.
 O Kafka só aceita *bytes* como entrada do producer.
 ##### Serialization: transforma objetos/dados em bytes, tanto as keys quanto os values.
 
+![Message serializer](/img/kafka-message-serializer.png)
+
+### Consumers
+
 
 
