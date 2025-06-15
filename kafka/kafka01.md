@@ -78,8 +78,20 @@ Uma vez que os dados foram *serializados* para serem enviados ao *producer*, os 
 >
 > Mensagens que não respeitam o acôrdo de formato de serialização.
 
+### Consumer Groups
+  
+O consumidores dentro de um mesmo grupo são capazes de coordenar a separação do trabalho de leitura de diferentes partições. Qualquer *consumer* faz parte de um *consumer group*.
+- cada *consumer* dentro de um grupo lê de partições exclusivas;
+- se houver mais *consumers* que partições, esses *consumers* ficarão inativos;
+
+![Consumer group](/img/kafka-consumer-group01.png)
 
 
+Múltiplos *consumer groups* podem consumir de um mesmo tópico ao mesmo tempo. Cadas *consumer group* possui um ***group.id***. 
+
+![Multiplos consumer groups](/img/kafka-consumer-group02.png)
+
+### Consumer Offsets
 
 
 
