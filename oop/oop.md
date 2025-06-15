@@ -80,7 +80,7 @@ A herança estabelece uma relação "é um" entre classes. Uma classe filha (sub
 - Complexidade em linguagnes que suportam herança múltipla
 - Hierarquia rígida: difícil alterar estrutura conforme requisitos mudam
 
-```code
+```java
 class Veiculo {
     int velocidade;
 
@@ -105,7 +105,7 @@ A composição estabelece uma relação "tem um", onde uma classe contém uma in
 #### Desvantagens
 - Pode aumentar o número de objetos: várias classes menores para obter um conjunto de comportamentos
 
-```code
+```java
 class Motor {
     void ligar() {
         // Lógica para ligar o motor

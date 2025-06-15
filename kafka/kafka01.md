@@ -1,18 +1,24 @@
 # Kafka - Um Pouco de Teoria
 
-Apache Kafka é um sistema distribuido, de código aberto, composto por servidores e clientes, usado principalmente para construir pipelines de streaming de dados em tempo real. É uma plataforma de fluxo de eventos, capas de manipular milhões de mensagens por segundo.
+Apache Kafka é um sistema distribuido, de código aberto, composto por servidores e clientes, usado principalmente para construir pipelines de streaming de dados em tempo real. É uma plataforma de fluxo de eventos, capaz de manipular milhões de mensagens por segundo.
 
-***Um stream o de dados é normalmente considerado uma sequência de dados potencialmente ilimitada. O nome streaming é usado porque queremos que os dados sejam acessíveis assim que são produzidos.***
+***Um stream de dados é normalmente considerado uma sequência de dados potencialmente ilimitada. O nome streaming é usado porque queremos que os dados sejam acessíveis assim que são produzidos.***
 
 Kafka é muito usado para:
 - pipeline de dados de alta performance/integação de dados
+```text
 Kafka permite desacoplar as fontes de streams de dados dos consumidores de dados. 
+```
 - stream processing
+```text
 Processamento de dados em tempo real: aplicação de filtros, joins, maps, agregações, etc...transformações em geral.
+```
 - streaming analytics
+```text
 Combinado com *Druid* para permitir queries analíticas
 - event-driven microservices
 Facilita comunicação entre microserviçoes, com baixa latência e tolerância a falhas. 
+```
 
 ### Não usar
 
@@ -57,6 +63,18 @@ O Kafka só aceita *bytes* como entrada do producer.
 ![Message serializer](/img/kafka-message-serializer.png)
 
 ### Consumers
+
+Uma vez que os dados foram produzidos no tópico, podemos criar aplicações para consumí-los.  Essas aplicações são os *consumers*.  São aplicações que leem dados dos tópicos.
+- Um *consumer* pode ler dados de uma ou mais partições. Porém, quando está conectado a mais de uma partição, a ordem não é garantida. A ordem apenas é garantida dentro de uma mesma partição. 
+- Um *consumer* sempre lê os dados do menos par ao maior offset.
+- Por **default**,  o *consumer* só vai ler os dados que foram produzidos após ele ter se conectado ao Kafka. É possível ler dados anteriores (históricos), mas é necessário uma configuração diferente.
+- Kafka *consumers* implementam **pull model**:  os *consumers* **DEVEM** pedir (solicitar) os dados ao "kafka broker". Ou seja, o *broker* não fica enviando os dados constantemente (**push model**). Desta forma, o controle da velocidade de consumo fica com o *consumer*.
+
+#### Message Deserializer
+
+
+
+
 
 
 
