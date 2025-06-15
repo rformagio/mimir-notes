@@ -72,6 +72,12 @@ Uma vez que os dados foram produzidos no tópico, podemos criar aplicações par
 
 #### Message Deserializer
 
+Uma vez que os dados foram *serializados* para serem enviados ao *producer*, os mesmos devem ser *deserialozados* para serem enviados ao *consumer*.  Os formatos não devm ser alterados. Se foi usado *StringSerializer*, deve-se usar o *StringDeserializer*, etc.
+
+> **Poison pills** 
+>
+> Mensagens que não respeitam o acôrdo de formato de serialização.
+
 
 
 

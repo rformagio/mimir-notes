@@ -1,4 +1,4 @@
-Bom dia, Rodrigo! Entendi que você quer acessar os notebooks da sua rede doméstica usando **nomes (ex: `meu-notebook.local`)** em vez de IPs. Isso é totalmente possível, mas o roteador TP-Link Archer AX53 **não oferece um servidor DNS local** com resolução automática de nomes por padrão. No entanto, você tem algumas opções:
+Aessar os notebooks da sua rede doméstica usando **nomes (ex: `meu-notebook.local`)** em vez de IPs. É totalmente possível, mas o roteador TP-Link Archer AX53 **não oferece um servidor DNS local** com resolução automática de nomes por padrão. No entanto, você tem algumas opções:
 
 ---
 
@@ -80,5 +80,3 @@ O Archer AX53 **não faz resolução de nomes locais automaticamente** via DNS. 
 | Usar DNS local com dnsmasq | Avançado      | Redes maiores/fixas   |
 
 ---
-
-Se quiser ajuda para alguma dessas opções (instalar Bonjour, configurar o `hosts`, ou montar um mini servidor DNS), me avise que te guio passo a passo!
