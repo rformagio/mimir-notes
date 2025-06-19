@@ -5,20 +5,17 @@ Apache Kafka é um sistema distribuido, de código aberto, composto por servidor
 ***Um stream de dados é normalmente considerado uma sequência de dados potencialmente ilimitada. O nome streaming é usado porque queremos que os dados sejam acessíveis assim que são produzidos.***
 
 Kafka é muito usado para:
-- pipeline de dados de alta performance/integação de dados
-```text
-Kafka permite desacoplar as fontes de streams de dados dos consumidores de dados. 
-```
-- stream processing
-```text
+- pipeline de dados de alta performance/integação de dados  
+Kafka permite desacoplar as fontes de streams de dados dos consumidores de dados.   
+
+- stream processing  
 Processamento de dados em tempo real: aplicação de filtros, joins, maps, agregações, etc...transformações em geral.
-```
-- streaming analytics
-```text
-Combinado com *Druid* para permitir queries analíticas
-- event-driven microservices
+
+- streaming analytics  
+Combinado com *Druid* para permitir queries analíticas  
+
+- event-driven microservices  
 Facilita comunicação entre microserviçoes, com baixa latência e tolerância a falhas. 
-```
 
 ### Não usar
 
@@ -92,6 +89,33 @@ Múltiplos *consumer groups* podem consumir de um mesmo tópico ao mesmo tempo. 
 ![Multiplos consumer groups](/img/kafka-consumer-group02.png)
 
 ### Consumer Offsets
+
+Os *brokers* Kafka usam um tópico interno (*__consumer_offsets*) que rastreia as mensagens que um determinado grupo de consumidores processou com sucesso pela última vez.
+
+Regularmente, o consumidor executa o *commit* da última mensagem processada, incrementando o *offset* e gerando um *consumer offset*, funciona como um *chekpoint*.
+
+A maioria das implementações (*libs*) executa o *commit* de forma automática de tempos em tempos (período) e o *broker* escreve no tópico *__consumer_offsets* (Não é o consumer que escreve nesse tópico!!). 
+
+#### Pontos importantes:
+- Se algum cliente (*consumer*) tem um problema e pára ou "quebra", ocorre um *rebalance* e o último *offset* comitado indica onde os *consumers* devem reiniciar o processo de leitura;
+- Se novos *consumers* são adicionados ao grupo, ocorre um *rebalance* e *offset* indica onde iniciar o processamento.
+
+Por default, consumidores *Java* executam o *commit* automático:
+```json
+enable.auto.commit=true
+```
+Ocorre a cada 5s:
+```json
+auto.commit.interval.ms=5000
+```
+quando o método ***.poll()*** é chamado.
+
+O consumidor pode escolher quando comitar o *offset*:
+```json
+enable.auto.commit=false
+```
+
+
 
 
 
