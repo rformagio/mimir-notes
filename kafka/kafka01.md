@@ -27,13 +27,13 @@ Também não deve ser uado como uma base de dados com índices, pois o Kafka nã
 
 ### Tópicos
 
-Tópicos são como tabelas de dados sem *constraints*. OS tópicos são onde as mensagens são armazenadas, de forma organizada. Pode-se ter quantos tópicos quanto necessário e cada um é idenficiado por um nome. São imutáveis, cada vez que o dado é escrito em uma *partição* não pode mais ser alterado.
+Tópicos são *streams* de dados. Também pode-se "compará-los" com tabelas de dados sem *constraints*. OS tópicos são onde as mensagens são armazenadas, de forma organizada. Pode-se ter quantos tópicos quanto necessário e cada um é idenficiado por um nome. São imutáveis, cada vez que o dado é escrito em uma *partição* não pode mais ser alterado.
 
 #### Partições: tópicos são dividios em partições;
 #### Offset: é um *id* incremental, por partição. Não pode ser reaproveitado. Só faz sentido na partição que foi criado.
 
-***A ordem só é garantida dentro de uma mesma partição***
-Seum tópico tem mais de uma partição, a ordem é garantida apenas na partição e não através de partições.
+***A ordem só é garantida dentro de uma mesma partição***  
+Se um tópico tem mais de uma partição, a ordem é garantida apenas na partição e não através de partições.
 
 ### Producers
 
@@ -49,7 +49,8 @@ Cada mensagem pode possuir uma *key* e um *value*, ambos opcionais.
 
 - compression-type: a mensagem pode ser comprimida; opções: *none*, *gzip*, *lz4*, *snappy* e *zstd*
 - headers: um lista opcional no formato *key-value*; usado para metadata, tracing
-- partition + offset: número da partição e offset id
+- partition: número da partição  
+- offset: offset id
 - timestamp: gerado pelo usuário ou pelo sistema
 
 #### Message serializer
@@ -59,17 +60,19 @@ O Kafka só aceita *bytes* como entrada do producer.
 
 ![Message serializer](/img/kafka-message-serializer.png)
 
+>> No nível do código, após a montagem do *record* da mensagem, o método *.send()* repassa o *record* para um bloco conehcido como *partitioner*. Esse bloco é responsável em determinar para qual partição será enviada a mensagem. O processo de mapear para qual partição será enviada a mensagem utilizando a *key* é chamado de *Key Hashing*.  No *partitioner* padrão, as *keys* são transformadas em *hash* usando o ***murmur2*** algorithm  
+
 ### Consumers
 
 Uma vez que os dados foram produzidos no tópico, podemos criar aplicações para consumí-los.  Essas aplicações são os *consumers*.  São aplicações que leem dados dos tópicos.
 - Um *consumer* pode ler dados de uma ou mais partições. Porém, quando está conectado a mais de uma partição, a ordem não é garantida. A ordem apenas é garantida dentro de uma mesma partição. 
-- Um *consumer* sempre lê os dados do menos par ao maior offset.
+- Um *consumer* sempre lê os dados do menor para o maior offset.
 - Por **default**,  o *consumer* só vai ler os dados que foram produzidos após ele ter se conectado ao Kafka. É possível ler dados anteriores (históricos), mas é necessário uma configuração diferente.
 - Kafka *consumers* implementam **pull model**:  os *consumers* **DEVEM** pedir (solicitar) os dados ao "kafka broker". Ou seja, o *broker* não fica enviando os dados constantemente (**push model**). Desta forma, o controle da velocidade de consumo fica com o *consumer*.
 
 #### Message Deserializer
 
-Uma vez que os dados foram *serializados* para serem enviados ao *producer*, os mesmos devem ser *deserialozados* para serem enviados ao *consumer*.  Os formatos não devm ser alterados. Se foi usado *StringSerializer*, deve-se usar o *StringDeserializer*, etc.
+Uma vez que os dados foram *serializados* para serem enviados ao *producer*, os mesmos devem ser *deserialozados* para serem enviados ao *consumer*.  Os formatos não devem ser alterados. Se foi usado *StringSerializer*, deve-se usar o *StringDeserializer*, etc.
 
 > **Poison pills** 
 >
@@ -84,7 +87,7 @@ O consumidores dentro de um mesmo grupo são capazes de coordenar a separação 
 ![Consumer group](/img/kafka-consumer-group01.png)
 
 
-Múltiplos *consumer groups* podem consumir de um mesmo tópico ao mesmo tempo. Cadas *consumer group* possui um ***group.id***. 
+Múltiplos *consumer groups* podem consumir de um mesmo tópico ao mesmo tempo. Cada *consumer group* possui um ***group.id***. 
 
 ![Multiplos consumer groups](/img/kafka-consumer-group02.png)
 
@@ -101,21 +104,66 @@ A maioria das implementações (*libs*) executa o *commit* de forma automática 
 - Se novos *consumers* são adicionados ao grupo, ocorre um *rebalance* e *offset* indica onde iniciar o processamento.
 
 Por default, consumidores *Java* executam o *commit* automático:
-```json
+```yaml
 enable.auto.commit=true
 ```
 Ocorre a cada 5s:
-```json
+``` yaml
 auto.commit.interval.ms=5000
 ```
 quando o método ***.poll()*** é chamado.
 
 O consumidor pode escolher quando comitar o *offset*:
-```json
+```yaml
 enable.auto.commit=false
 ```
 
+### Delivery Semantics
 
+Um *consumer* pode escolher quando executar os *commit offsets*.  Na reinicialização dos *consumers* as mensagens poderão ser ignoradas ou lidas 2 vezes, dependendo da estratéiga escolhida.
+
+Existem 3 estratégias de *delivery semantics* :
+- At most once (no máximo uma vez)  
+Neste caso, as mensagesn são comitadas assim que o *lote* (batch) de mensagens é recebido após a chamada do *poll()*. Se o processamento falhar, as mensagens serão perdidas, pois a próxima leitura (chamada de poll()) trará dados novos.  
+Pode ser adequado para sistemas que suportam perda de dados;
+- At least once (pelo menos uma vez)  
+Neste caso, as mensagens são comitadas após o processamento. Pode causar duplicidade de mensagens.  Se o processamento der erro, a mensagem poderá ser lida novamente.  
+Essa é a estratégia mais usada!!
+> Idempotência
+> Tratamento para que, no caso de uma mesma mensagem seja processada novamente, não cause impacto no sistema.
+- Exactly once (Exatamente uma vez)  
+Cada mensagem é entregue apenas uma vez.   
+Aqui existem 2 possibilidades de alcançar este modelo:  
+1. Usando API Transasional do Kafka, de tópico para tópico.  *Kafka Streams* simplifica isso através do uso da propriedade: ```processing.guarantee=exactly.once```
+2. No caso de mensagens tópico para fora, a única maneira é tornar o *consumer* idempotente.
+
+### Estratégia de *commit* automático de *offset*
+
+Por padrão, a API Java do Kafka Consumer comita os *offsets* regularmente e automaticamente, implicando na estratégia *at least once*. 
+```enable.auto.commit=true``` faz com que os *offsets* sejam comitados automaticamente com uma frequência controlada por ```auto.commit.interval.ms=5000```.
+1. o método *poll()* é chamado;
+2. o tempo entre 2 chamadas de *poll()*  for maior que ```auto.commit.interval.ms```
+
+
+### Kafka Broker
+
+Um *broker* é um servidor Kafka. Cada broker é identificado por um id numérico único. Um cluster é formado por um conjunto de brokers.
+
+O broker armazena os dados em um diretório no disco do servidor. Cada tópico possui um sub-diretório com o nome do tópico.  Para ter escalabilidade e balancemento, os tópicos são dividios em partições e estas são distribuídas entre os brokers do cluster.
+
+Cada broker no cluster possui metadados sobre os demais brokers. Assim, basta que um cliente se conecte à um broker para conhecer os demais. 
+
+![Bootstrap Server](/img/kafka-client-brokers.png)
+
+É uma boa prática o cliente se referir a pelo menos 2 brokers na url de conexão.
+
+### Kafka Topic Replication
+
+#### Replication Factor
+
+Replicação de dados previne perda escrevendo o mesmo dado em mais de um broker.
+
+![Replication](/img/kafka-replication.png)
 
 
 

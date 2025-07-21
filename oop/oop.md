@@ -74,7 +74,7 @@ A herança estabelece uma relação "é um" entre classes. Uma classe filha (sub
 
 #### Vantagens
 - Reuso de código
-- Hierarquia natural;: modela relações claras, como "Um carro é um veículo"
+- Hierarquia natural: modela relações claras, como "Um carro é um veículo"
 #### Desvantagens
 - Acoplamento forte
 - Complexidade em linguagnes que suportam herança múltipla
@@ -129,7 +129,7 @@ class Carro {
 
 1. Factory Method
 
-Aqui não podemos pecar por uma definição simplória, de que basta um método criar um objeto que está aplicando o pattern
+Aqui não podemos pecar por uma definição simplória, de que basta um método criar um objeto que está aplicando o *pattern*.
 
 Para  ser considerado *Factory Method* devem-se cumprir 3 requisitos:
 - Criar um novo objeto;
