@@ -166,5 +166,44 @@ Replicação de dados previne perda escrevendo o mesmo dado em mais de um broker
 ![Replication](/img/kafka-replication.png)
 
 
+Cada partição tem um líder (broker leader)  e múltiplas réplicas (se replication factor for maior que 1)
+
+### Configuração do Producer *acks*
+
+Um *kafka producer* pode especificar o nível de *acks* para dizer se a mensagem  precisa ser escrita em um número mínimo de réplicas antes de ser considerado sucesso!
+
+Por padrão:
+- se Kafka < v3.0; acks=1
+- se Kafka > v3.0; acks=all
+
+#### acks=0
+
+Considera **SUCESSO** no momento que a mensagem foi enviada., sem aguardar retorno do broker.
+Se o broker estiver *offline* ou ocorrer alguma *exception* o *producer* não saberá e o dado será perdido.
+Usado quando uma possível perda de mensagem é aceitável: coleta de métricas, por exemplo.
+
+#### acks=1
+
+Considera **SUCESSO**  quando um *broker leader* retorna ok.  
+A replicação não é garantida.
+
+#### acks=all
+
+Considera **SUCESSO** quando a mensagem é aceita por todos os *in-sync replicas* (ISR).  
+O *leader* verifica se há o número mínimo de réplicas (min.insync.replicas) para retornar sucesso.  
+A propriedade pode ser configurada tanto à nível de tópico, quanto de broker.
+A quantidade configurada em min.insync.replica considera o *leader* na contagem.  
+Se não houverem replicas suficientes respondendo (not available), o *producer* (cliente) receberá uma exeception:  *NotEnoughReplicasException*
+
+### Topic Durability & Availability
+
+>acks=all  
+>min.insync.replicas=M  
+>replication.factor=N  
+>N-M brokers podem estar indisponíveis e o tópico ainda será considerado disponível.
+
+
+Kafka consumers, por padrão, leem da partiação líder.
+
 
 
