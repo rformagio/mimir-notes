@@ -104,17 +104,17 @@ A maioria das implementações (*libs*) executa o *commit* de forma automática 
 - Se novos *consumers* são adicionados ao grupo, ocorre um *rebalance* e *offset* indica onde iniciar o processamento.
 
 Por default, consumidores *Java* executam o *commit* automático:
-```yaml
+```json
 enable.auto.commit=true
 ```
 Ocorre a cada 5s:
-``` yaml
+```json
 auto.commit.interval.ms=5000
 ```
 quando o método ***.poll()*** é chamado.
 
 O consumidor pode escolher quando comitar o *offset*:
-```yaml
+```json
 enable.auto.commit=false
 ```
 
